@@ -6,7 +6,6 @@ use File::stat;
 use esmith::event;
 use Getopt::Std;
 
-my $db = esmith::ConfigDB->open_ro('certificates');
 my $cdb = esmith::ConfigDB->open();
 my $ddb = esmith::HostsDB->open_ro();
 
@@ -122,24 +121,6 @@ if (renew(\@domains)) {
     $cdb->set_prop('pki','KeyFile', $crtdir.$fqdn."/privkey.pem");
 }
 
-
-
-
-# Custom certificates
-foreach my $cert ($db->get_all_by_prop('type' => 'certificate')) {
-    my @domains = ();
-    my $domain = $cert->key;
-    my $status = $cert->prop('status') || 'disabled';
-    next if ($status eq 'disabled');
-    push(@domains, $domain);
-
-    if(renew(\@domains) && $verbose) {
-        print "Renewed files for custom domain $domain:\n";
-        print "  ChainFile:\t$crtdir$domain/chain.pem\n";
-        print "  CrtFile:\t$crtdir$domain/cert.pem\n";
-        print "  KeyFile:\t$crtdir$domain/privkey.pem\n";
-    }
-}
 
 
 if ($modified > 0) {
