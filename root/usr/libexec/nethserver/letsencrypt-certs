@@ -46,6 +46,10 @@ sub renew {
     }
     system($cmd);
 
+    if ($testing) {
+        exit $?>>8;
+    }
+
     # read the date of certificate link after renewal
     $tmp = stat($crt);
     my $after = defined($tmp) ? $tmp->mtime : 0;
@@ -86,9 +90,17 @@ if (defined $options{t}) {
     use File::Temp;
     use File::Copy;
     $testing = 1;
-    my $tmp = File::Temp->new( UNLINK => 1);
-    system("sed 's|^#CA=\".*\"|CA=https://acme-staging.api.letsencrypt.org/directory|' $config > $tmp");
-    $config = $tmp;
+
+    my $dirname = File::Temp::tempdir( CLEANUP => 1 );
+    my $filename = 'report.txt';
+    open(my $fh, '>', $dirname."/config.sh") or die "Could not open file '$dirname/config.sh' $!";
+    print $fh "CHALLENGETYPE=http-01\n";
+    print $fh "CA=https://acme-staging.api.letsencrypt.org/directory\n";
+    print $fh "WELLKNOWN=/var/www/html/.well-known/acme-challenge/\n";
+    print $fh "BASEDIR=$dirname\n";
+    close $fh;
+
+    $config = $dirname."/config.sh";
 }
 
 
