@@ -22,6 +22,7 @@ NethServer Let's Encrypt integration
 
 %build
 %{makedocs}
+perl createlinks
 
 %install
 rm -rf $RPM_BUILD_ROOT
