@@ -41,4 +41,5 @@ event_services('nethserver-letsencrypt-update', qw(
                httpd reload
 ));
 templates2events('/etc/letsencrypt.sh/config.sh', 'nethserver-letsencrypt-update');
+templates2events('/etc/httpd/conf/httpd.conf', 'nethserver-letsencrypt-update');
 
