@@ -1,6 +1,6 @@
 Summary: nethserver letsencrypt integration
 Name: nethserver-letsencrypt
-Version: 1.0.1
+Version: 1.0.2
 Release: 1%{?dist}
 License: GPL
 Source: %{name}-%{version}.tar.gz
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir /var/www/html/.well-known/acme-challenge/
 
 %changelog
+* Fri May 20 2016 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.2-1
+- Let's Encrypt: apache template not expanded - Bug #3386 [NethServer]
+
 * Tue Mar 15 2016 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.1-1
 - Let's Encrypt: missing update event - Bug #3365 [NethServer]
 
