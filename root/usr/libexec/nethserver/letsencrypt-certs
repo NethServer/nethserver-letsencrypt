@@ -9,21 +9,42 @@ use Getopt::Std;
 my $cdb = esmith::ConfigDB->open();
 my $ddb = esmith::HostsDB->open_ro();
 
-my $crtdir = "/etc/letsencrypt.sh/certs/";
-my $lebin = "/usr/sbin/letsencrypt.sh";
-my $config = "/etc/letsencrypt.sh/config.sh";
+my $crtdir = "/etc/letsencrypt/";
+my $crtdir_backup = "/etc/letsencrypt.autobackup/";
+my $lebin = "/usr/bin/certbot";
+my $config = "";
 my $verbose = 0;
 my $testing = 0;
 my $force = 0;
+our $mail = '';
 our $modified = 0;
+
+$SIG{INT}  = \&restore;
+$SIG{TERM} = \&restore;
+
+sub restore {
+    if ( -d $crtdir_backup) {
+        # restore backup cert dir
+        if ($verbose) {
+            print "Restoring $crtdir ...\n";
+        }
+        system("rm -rf $crtdir");
+        system("mv $crtdir_backup $crtdir");
+    }
+}
 
 sub renew {
     my $domains = shift;
 
-    my $opts = "--cron  --config $config ";
+    my $opts = " certonly --webroot --webroot-path /var/www/html/ --text --non-interactive --agree-tos ";
+    if (!$mail) {
+        $opts .= " --register-unsafely-without-email "
+    } else {
+        $opts .= " --email $mail "
+    }
 
     # file paths
-    my $crt = $crtdir.${$domains}[0]."/cert.pem";
+    my $crt = $crtdir.${$domains}[0]."/live/cert.pem";
     
     # read the date of certificate link before renewal
     my $tmp = stat($crt);
@@ -36,29 +57,26 @@ sub renew {
     }
 
     if ($force) {
-        $cmd .= " -x ";
+        $cmd .= " --force-renewal ";
+    }
+
+    if ($testing) {
+        $cmd .= " --test-cert ";
     }
 
     if (!$verbose) {
         $cmd .= " >/dev/null";
     } else {
+        $cmd .= " -v ";
         print $cmd."\n";
     }
-    system($cmd);
+    my $ret = system($cmd);
 
     if ($testing) {
-        exit $?>>8;
+        restore();
     }
 
-    # read the date of certificate link after renewal
-    $tmp = stat($crt);
-    my $after = defined($tmp) ? $tmp->mtime : 0;
-
-    if ($before != $after) {
-        $modified++;
-        return 1;
-    }
-    return 0;
+    exit $ret>>8;
 }
 
 sub help {
@@ -87,20 +105,10 @@ if (defined $options{f}) {
 }
 
 if (defined $options{t}) {
-    use File::Temp;
-    use File::Copy;
     $testing = 1;
 
-    my $dirname = File::Temp::tempdir( CLEANUP => 1 );
-    my $filename = 'report.txt';
-    open(my $fh, '>', $dirname."/config.sh") or die "Could not open file '$dirname/config.sh' $!";
-    print $fh "CHALLENGETYPE=http-01\n";
-    print $fh "CA=https://acme-staging.api.letsencrypt.org/directory\n";
-    print $fh "WELLKNOWN=/var/www/html/.well-known/acme-challenge/\n";
-    print $fh "BASEDIR=$dirname\n";
-    close $fh;
-
-    $config = $dirname."/config.sh";
+    # copy existing cert dir into a temporary one
+    system("mv $crtdir $crtdir_backup");
 }
 
 
@@ -115,33 +123,17 @@ if ($lets_status ne 'enabled') {
     exit 0;
 }
 
+$mail = $cdb->get_prop('pki','LetsEncryptMail') || '';
+
 # Certificate for FQDN
 my @domains = ();
-my $fqdn = $cdb->get_value('SystemName').".".$cdb->get_value('DomainName');
-push(@domains, $fqdn);
 
-foreach ($ddb->get_all_by_prop('type' => 'self')) {
-    my $le = $_->prop('LetsEncrypt') || 'disabled';
-    if ($le eq 'enabled') {
-        push(@domains, $_->key);
+my $le_domains =  $cdb->get_prop('pki','LetsEncryptDomains') || '';
+if ($le_domains) {
+    foreach (split(',',$le_domains)) {
+        push(@domains, $_);
     }
 }
 
-if (renew(\@domains)) {
-    $cdb->set_prop('pki','ChainFile', $crtdir.$fqdn."/chain.pem");
-    $cdb->set_prop('pki','CrtFile', $crtdir.$fqdn."/cert.pem");
-    $cdb->set_prop('pki','KeyFile', $crtdir.$fqdn."/privkey.pem");
-}
+renew(\@domains);
 
-
-
-if ($modified > 0) {
-   if ($verbose) {
-      print "Executing certificate-update event...\n";
-   }
-   if(esmith::event::event_signal('certificate-update') == 0) {
-       exit 1; 
-   }
-}
-
-exit 0;
