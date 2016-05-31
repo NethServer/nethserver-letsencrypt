@@ -37,6 +37,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}-%{version}-filelist
 %defattr(-,root,root)
 %dir /var/www/html/.well-known/acme-challenge/
+%dir %{_nseventsdir}/%{name}-update
 
 %changelog
 * Fri May 20 2016 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.2-1

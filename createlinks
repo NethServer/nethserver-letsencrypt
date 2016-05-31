@@ -25,18 +25,15 @@ use File::Path;
 
 
 #
-# certificate-update event
-#
-event_actions('certificate-update', qw(
-    initialize-default-databases      00
-));
-
-#
 # nethserver-letsencrypt-update event
 #
 
 event_services('nethserver-letsencrypt-update', qw(
                httpd reload
 ));
+event_actions('nethserver-letsencrypt-update', qw(
+    initialize-default-databases      00
+));
+
 templates2events('/etc/httpd/conf.d/nethserver.conf', 'nethserver-letsencrypt-update');
 
