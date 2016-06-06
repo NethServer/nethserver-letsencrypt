@@ -40,6 +40,10 @@ templates2events('/etc/letsencrypt.sh/config.sh', 'certificate-update');
 event_services('nethserver-letsencrypt-update', qw(
                httpd reload
 ));
+event_actions('nethserver-letsencrypt-update', qw(
+    initialize-default-databases      00
+));
+
 templates2events('/etc/letsencrypt.sh/config.sh', 'nethserver-letsencrypt-update');
 templates2events('/etc/httpd/conf/httpd.conf', 'nethserver-letsencrypt-update');
 
