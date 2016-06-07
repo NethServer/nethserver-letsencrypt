@@ -18,6 +18,8 @@ my $testing = 0;
 my $force = 0;
 our $mail = '';
 our $modified = 0;
+# Certificate for FQDN
+our @domains = ();
 
 $SIG{INT}  = \&restore;
 $SIG{TERM} = \&restore;
@@ -80,16 +82,18 @@ sub renew {
 }
 
 sub help {
-    print "Usage: $0 [-h] [-f] [-v] [-t]\n";
+    print "Usage: $0 [-h] [-f] [-d] [-v] [-t]\n";
     print "\nOptions:\n";
     print "  -h : show this help\n";
     print "  -f : force certificate renew\n";
+    print "  -d : comma-separated list of domains,\n";
+    print "       if not set read from config db pki[LetsEncryptDomains]\n";
     print "  -v : verbose\n";
     print "  -t : testing, enable staging CA\n";
 }
 
 my %options=();
-getopts("hvtf", \%options);
+getopts("hvtfd:", \%options);
 
 if (defined $options{h}) {
     help();
@@ -111,10 +115,14 @@ if (defined $options{t}) {
     system("mv $crtdir $crtdir_backup");
 }
 
-
+if (defined $options{d}) {
+    foreach (split(',',$options{d})) {
+        push(@domains, $_);
+    }
+}
 
 my $lets_status = $cdb->get_prop('pki','LetsEncrypt') || 'disabled';
-if ($lets_status ne 'enabled') {
+if (!$testing && $lets_status ne 'enabled') {
     if ($verbose) {
        print "LetsEncrypt is disabled, exiting.\n";
        print "\nTo enable LetsEncrypt, execute:\n";
@@ -125,13 +133,13 @@ if ($lets_status ne 'enabled') {
 
 $mail = $cdb->get_prop('pki','LetsEncryptMail') || '';
 
-# Certificate for FQDN
-my @domains = ();
-
-my $le_domains =  $cdb->get_prop('pki','LetsEncryptDomains') || '';
-if ($le_domains) {
-    foreach (split(',',$le_domains)) {
-        push(@domains, $_);
+# read domains from pki prop
+if (!@domains) {
+    my $le_domains =  $cdb->get_prop('pki','LetsEncryptDomains') || '';
+    if ($le_domains) {
+        foreach (split(',',$le_domains)) {
+            push(@domains, $_);
+        }
     }
 }
 
