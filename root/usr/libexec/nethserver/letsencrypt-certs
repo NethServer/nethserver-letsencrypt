@@ -121,16 +121,6 @@ if (defined $options{d}) {
     }
 }
 
-my $lets_status = $cdb->get_prop('pki','LetsEncrypt') || 'disabled';
-if (!$testing && $lets_status ne 'enabled') {
-    if ($verbose) {
-       print "LetsEncrypt is disabled, exiting.\n";
-       print "\nTo enable LetsEncrypt, execute:\n";
-       print "  config setprop pki LetsEncrypt enabled\n";
-    }
-    exit 0;
-}
-
 $mail = $cdb->get_prop('pki','LetsEncryptMail') || '';
 
 # read domains from pki prop
@@ -141,6 +131,10 @@ if (!@domains) {
             push(@domains, $_);
         }
     }
+}
+
+if (!@domains) {
+    exit 0;
 }
 
 renew(\@domains);
