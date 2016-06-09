@@ -1,5 +1,0 @@
-#
-# 30_nethserver_letsencrypt
-#
-%adm ALL=NOPASSWD: /usr/libexec/nethserver/letsencrypt-certs
-
