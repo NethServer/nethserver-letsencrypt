@@ -95,6 +95,11 @@ sub help {
 my %options=();
 getopts("hvtfd:", \%options);
 
+# make sure certificate dir exists
+if ( ! -d $crtdir) {
+    mkdir($crtdir);
+}
+
 if (defined $options{h}) {
     help();
     exit 0;
