@@ -78,6 +78,14 @@ sub renew {
         restore();
     }
 
+    # read the date of certificate link after renewal
+    $tmp = stat($crt);
+    my $after = defined($tmp) ? $tmp->mtime : 0;
+
+    if ($before != $after) {
+        $modified++;
+    }
+
     exit $ret>>8;
 }
 
@@ -142,5 +150,16 @@ if (!@domains) {
     exit 0;
 }
 
+# Renew certificate for all domains
 renew(\@domains);
 
+if ($modified > 0) {
+   if ($verbose) {
+      print "Executing certificate-update event...\n";
+   }
+   if(esmith::event::event_signal('certificate-update') == 0) {
+       exit 1;
+   }
+}
+
+exit 0;
