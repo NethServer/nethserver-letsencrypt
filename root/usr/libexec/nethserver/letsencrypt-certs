@@ -67,7 +67,7 @@ sub renew {
     }
 
     if (!$verbose) {
-        $cmd .= " >/dev/null";
+        $cmd .= " --quiet >/dev/null";
     } else {
         $cmd .= " -v ";
         print $cmd."\n";
