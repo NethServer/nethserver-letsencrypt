@@ -29,7 +29,6 @@ use File::Path;
 #
 event_actions('certificate-update', qw(
     initialize-default-databases      00
-    nethserver-generate-certificate 02
 ));
 templates2events('/etc/letsencrypt.sh/config.sh', 'certificate-update');
 
