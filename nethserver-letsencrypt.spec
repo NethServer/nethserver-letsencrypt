@@ -1,6 +1,6 @@
 Summary: nethserver letsencrypt integration
 Name: nethserver-letsencrypt
-Version: 1.0.3
+Version: 1.0.4
 Release: 1%{?dist}
 License: GPL
 Source: %{name}-%{version}.tar.gz
@@ -39,6 +39,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir /var/www/html/.well-known/acme-challenge/
 
 %changelog
+* Wed Mar 29 2017 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.4-1
+- Avoid certificate generation on Let's Encrypt renewal - #3438
+
 * Mon Jun 06 2016 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.3-1
 - Let's Encrypt: certificates not renewed - Bug #3399 [NethServer]
 
