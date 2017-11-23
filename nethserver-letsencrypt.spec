@@ -11,7 +11,7 @@ BuildRequires: nethserver-devtools >= 1.1.0-5
 
 AutoReq: no
 Requires: nethserver-base, nethserver-httpd
-Requires: letsencrypt.sh
+Requires: dehydrated
 
 
 %description
