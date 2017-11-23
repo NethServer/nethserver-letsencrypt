@@ -30,6 +30,7 @@ rm -rf $RPM_BUILD_ROOT
 (cd root   ; find . -depth -print | cpio -dump $RPM_BUILD_ROOT)
 %{genfilelist} $RPM_BUILD_ROOT > %{name}-%{version}-filelist
 mkdir -p %{buildroot}/var/www/html/.well-known/acme-challenge/ 
+mkdir -p %{buildroot}/etc/letsencrypt.sh/certs/
 echo "%doc COPYING" >> %{name}-%{version}-filelist
 
 %clean 
@@ -38,6 +39,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}-%{version}-filelist
 %defattr(-,root,root)
 %dir /var/www/html/.well-known/acme-challenge/
+%dir /etc/letsencrypt.sh/
+%dir /etc/letsencrypt.sh/certs/
 
 %changelog
 * Wed Mar 29 2017 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.4-1
