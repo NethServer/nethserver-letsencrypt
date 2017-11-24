@@ -10,7 +10,7 @@ my $cdb = esmith::ConfigDB->open();
 my $ddb = esmith::HostsDB->open_ro();
 
 my $crtdir = "/etc/letsencrypt.sh/certs/";
-my $lebin = "/usr/sbin/letsencrypt.sh";
+my $lebin = "/usr/bin/dehydrated";
 my $config = "/etc/letsencrypt.sh/config.sh";
 my $verbose = 0;
 my $testing = 0;
@@ -20,7 +20,7 @@ our $modified = 0;
 sub renew {
     my $domains = shift;
 
-    my $opts = "--cron  --config $config ";
+    my $opts = "--accept-terms --cron  --config $config ";
 
     # file paths
     my $crt = $crtdir.${$domains}[0]."/cert.pem";
