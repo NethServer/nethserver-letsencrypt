@@ -46,7 +46,7 @@ sub renew {
     }
 
     # file paths
-    my $crt = $crtdir."/live/".${$domains}[0]."/cert.pem";
+    my $crt = $crtdir."/live/".lc(${$domains}[0])."/cert.pem";
     
     # read the date of certificate link before renewal
     my $tmp = stat($crt);
