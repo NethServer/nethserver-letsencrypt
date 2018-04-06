@@ -1,6 +1,6 @@
 Summary: nethserver letsencrypt integration
 Name: nethserver-letsencrypt
-Version: 1.1.4
+Version: 1.1.5
 Release: 1%{?dist}
 License: GPL
 Source: %{name}-%{version}.tar.gz
@@ -40,6 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_nseventsdir}/%{name}-update
 
 %changelog
+* Fri Apr 06 2018 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.1.5-1
+- Certs from Letsencrypt renewal not propagated to https and Admin servers - Bug NethServer/dev#5441
+
 * Tue Apr 04 2017 Davide Principi <davide.principi@nethesis.it> - 1.1.4-1
 - httpd does not start after restore if ssl certificate is from LetsEncrypt -- NethServer/dev#5241
 
