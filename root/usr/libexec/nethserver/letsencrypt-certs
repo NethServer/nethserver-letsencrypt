@@ -89,7 +89,7 @@ sub renew {
 }
 
 sub help {
-    print "Usage: $0 [-h] [-f] [-d] [-v] [-t]\n";
+    print "Usage: $0 [-h] [-f] [-d] [-v] [-t] [-e]\n";
     print "\nOptions:\n";
     print "  -h : show this help\n";
     print "  -f : force certificate renew\n";
@@ -97,10 +97,11 @@ sub help {
     print "       if not set read from config db pki[LetsEncryptDomains]\n";
     print "  -v : verbose\n";
     print "  -t : testing, enable staging CA\n";
+    print "  -e : use given mail for registration\n";
 }
 
 my %options=();
-getopts("hvtfd:", \%options);
+getopts("hvtfd:e:", \%options);
 
 # make sure certificate dir exists
 if ( ! -d $crtdir) {
@@ -133,7 +134,11 @@ if (defined $options{d}) {
     }
 }
 
-$mail = $cdb->get_prop('pki','LetsEncryptMail') || '';
+if (defined $options{e}) {
+    $mail = $options{e};
+} else {
+    $mail = $cdb->get_prop('pki','LetsEncryptMail') || '';
+}
 
 # read domains from pki prop
 if (!@domains) {
