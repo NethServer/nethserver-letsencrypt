@@ -1,6 +1,6 @@
 Summary: nethserver letsencrypt integration
 Name: nethserver-letsencrypt
-Version: 1.1.5
+Version: 1.1.6
 Release: 1%{?dist}
 License: GPL
 Source: %{name}-%{version}.tar.gz
@@ -40,6 +40,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_nseventsdir}/%{name}-update
 
 %changelog
+* Tue Apr 17 2018 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.1.6-1
+- Let's Encrypt: registration mail address not fully validated - Bug NethServer/dev#5455
+
 * Fri Apr 06 2018 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.1.5-1
 - Certs from Letsencrypt renewal not propagated to https and Admin servers - Bug NethServer/dev#5441
 
