@@ -95,7 +95,7 @@ if (defined $options{t}) {
     my $filename = 'report.txt';
     open(my $fh, '>', $dirname."/config.sh") or die "Could not open file '$dirname/config.sh' $!";
     print $fh "CHALLENGETYPE=http-01\n";
-    print $fh "CA=https://acme-staging.api.letsencrypt.org/directory\n";
+    print $fh "CA=https://acme-staging-v02.api.letsencrypt.org/directory\n";
     print $fh "WELLKNOWN=/var/www/html/.well-known/acme-challenge/\n";
     print $fh "BASEDIR=$dirname\n";
     close $fh;
