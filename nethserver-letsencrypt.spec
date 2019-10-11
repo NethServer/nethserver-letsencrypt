@@ -1,6 +1,6 @@
 Summary: nethserver letsencrypt integration
 Name: nethserver-letsencrypt
-Version: 1.0.5
+Version: 1.0.6
 Release: 1%{?dist}
 License: GPL
 Source: %{name}-%{version}.tar.gz
@@ -43,6 +43,9 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/letsencrypt.sh/certs/
 
 %changelog
+* Fri Oct 11 2019 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.6-1
+- Let's Encrypt: staging request always fails - Bug #3453 [NethServer 6]
+
 * Fri Nov 24 2017 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.0.5-1
 - Impossible to obtain Let's encrypt certs on NS6 - Bug NethServer/dev#5389
 
