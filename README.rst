@@ -37,10 +37,14 @@ Digitial Ocean example
 ----------------------
 
 1. Install the plugin: ``yum install python2-certbot-dns-digitalocean``
-2. Configure requires props accordingly to https://certbot-dns-digitalocean.readthedocs.io/en/stable/: ::
+2. Configure requires props accordingly to https://certbot-dns-digitalocean.readthedocs.io/en/stable/:
+   
+   ::
 
-   config setprop pki LetsEncrypt_dns_digitalocean_token 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+     config setprop pki LetsEncrypt_dns_digitalocean_token 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
-3. Request the certificate for domain ``myserver.nethserver.org``: ::
+3. Request the certificate for domain ``myserver.nethserver.org``:
+
+   ::
  
-   /usr/libexec/nethserver/letsencrypt-certs -v -c dns-digitalocean -d myserver.nethserver.org
+     /usr/libexec/nethserver/letsencrypt-certs -v -c dns-digitalocean -d myserver.nethserver.org
