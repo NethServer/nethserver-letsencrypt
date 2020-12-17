@@ -1,10 +1,11 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 use esmith::ConfigDB;
 use esmith::HostsDB;
 use File::stat;
 use esmith::event;
 use Getopt::Std;
+use File::Temp;
 
 my $cdb = esmith::ConfigDB->open();
 my $ddb = esmith::HostsDB->open_ro();
@@ -20,6 +21,8 @@ our $mail = '';
 our $modified = 0;
 # Certificate for FQDN
 our @domains = ();
+my $challenge = 'http';
+my $tmp;
 
 $SIG{INT}  = \&restore;
 $SIG{TERM} = \&restore;
@@ -37,12 +40,21 @@ sub restore {
 
 sub renew {
     my $domains = shift;
+    my $challenge = shift;
+    my $config = shift || '';
 
-    my $opts = " certonly --webroot --webroot-path /var/www/html/ --text --non-interactive --agree-tos ";
+    my $opts = " certonly --text --non-interactive --agree-tos ";
     if (!$mail) {
         $opts .= " --register-unsafely-without-email "
     } else {
         $opts .= " --email $mail "
+    }
+
+    if ($challenge eq 'http') {
+        $opts .= " --preferred-challenges http --webroot --webroot-path /var/www/html/ ";
+    } else {
+        #$opts .= " --preferred-challenges dns --$challenge --$challenge-credentials $config --$challenge-propagation-seconds 30";
+        $opts .= " --preferred-challenges dns --$challenge --$challenge-credentials $config";
     }
 
     # file paths
@@ -89,7 +101,7 @@ sub renew {
 }
 
 sub help {
-    print "Usage: $0 [-h] [-f] [-d] [-v] [-t] [-e]\n";
+    print "Usage: $0 [-h] [-f] [-d <domain1,domain2,..>] [-v] [-t] [-e <mail_address>] [-c <http|dns>]\n";
     print "\nOptions:\n";
     print "  -h : show this help\n";
     print "  -f : force certificate renew\n";
@@ -98,10 +110,11 @@ sub help {
     print "  -v : verbose\n";
     print "  -t : testing, enable staging CA\n";
     print "  -e : use given mail for registration\n";
+    print "  -c : select challenge type. Valid valures are: 'http' and 'dns-digitalocean'\n";
 }
 
 my %options=();
-getopts("hvtfd:e:", \%options);
+getopts("hvtfd:e:c:", \%options);
 
 # make sure certificate dir exists
 if ( ! -d $crtdir) {
@@ -140,6 +153,19 @@ if (defined $options{e}) {
     $mail = $cdb->get_prop('pki','LetsEncryptMail') || '';
 }
 
+if (defined $options{c}) {
+    $challenge = $options{c};
+    if ($challenge =~ m/^dns/) {
+        $tmp = File::Temp->new( UNLINK => 0, SUFFIX => '.ini' );
+        my %props = $cdb->get('pki')->props();
+        foreach $p (keys %props) {
+            if($p =~ m/LetsEncrypt_(.*)$/) {
+                print $tmp "$1=$props{$p}\n";
+            }
+        }
+    }
+}
+
 # read domains from pki prop
 if (!@domains) {
     my $le_domains =  $cdb->get_prop('pki','LetsEncryptDomains') || '';
@@ -155,7 +181,7 @@ if (!@domains) {
 }
 
 # Renew certificate for all domains
-renew(\@domains);
+renew(\@domains, $challenge, $tmp->filename);
 
 if ($modified > 0) {
    if ($verbose) {
