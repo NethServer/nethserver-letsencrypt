@@ -31,7 +31,7 @@ See the list of available plugin here: https://certbot.eff.org/docs/using.html?h
 
 When using the dns challenge, make sure to set extra properties accordingly to certbot configuration.
 All properties for the dns challenge should be in the form ``LetsEncrypt_<certbot_option>``, where
-``<certbot_option>``` is the option specific to certbot DNS plugin.
+``<certbot_option>`` is the option specific to certbot DNS plugin.
 
 Digitial Ocean example
 ----------------------
