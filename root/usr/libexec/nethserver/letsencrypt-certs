@@ -53,8 +53,7 @@ sub renew {
     if ($challenge eq 'http') {
         $opts .= " --preferred-challenges http --webroot --webroot-path /var/www/html/ ";
     } else {
-        #$opts .= " --preferred-challenges dns --$challenge --$challenge-credentials $config --$challenge-propagation-seconds 30";
-        $opts .= " --preferred-challenges dns --$challenge --$challenge-credentials $config";
+        $opts .= " --preferred-challenges dns --$challenge --$challenge-credentials $config --$challenge-propagation-seconds 15";
     }
 
     # file paths
