@@ -40,6 +40,7 @@ Digitial Ocean example
 2. Configure requires props accordingly to https://certbot-dns-digitalocean.readthedocs.io/en/stable/: ::
 
    config setprop pki LetsEncrypt_dns_digitalocean_token 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
 3. Request the certificate for domain ``myserver.nethserver.org``: ::
  
    /usr/libexec/nethserver/letsencrypt-certs -v -c dns-digitalocean -d myserver.nethserver.org
