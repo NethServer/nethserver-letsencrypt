@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 use esmith::ConfigDB;
 use esmith::HostsDB;
@@ -100,7 +100,7 @@ sub renew {
 }
 
 sub help {
-    print "Usage: $0 [-h] [-f] [-d <domain1,domain2,..>] [-v] [-t] [-e <mail_address>] [-c <http|dns>]\n";
+    print "Usage: $0 [-h] [-f] [-d <domain1,domain2,..>] [-v] [-t] [-e <mail_address>] [-c <http|dns-plugin_name>]\n";
     print "\nOptions:\n";
     print "  -h : show this help\n";
     print "  -f : force certificate renew\n";
@@ -109,7 +109,9 @@ sub help {
     print "  -v : verbose\n";
     print "  -t : testing, enable staging CA\n";
     print "  -e : use given mail for registration\n";
-    print "  -c : select challenge type. Valid valures are: 'http' and 'dns-digitalocean'\n";
+    print "  -c : select challenge type. Valid valures are: 'http' and 'dns-plugin_name'\n";
+    print "       Example of dns plugin: 'dns-digitalocean'\n";
+    print "       For a complete dns plugin list see 'certbot -h certonly'\n";
 }
 
 my %options=();
