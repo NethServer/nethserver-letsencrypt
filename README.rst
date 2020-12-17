@@ -56,8 +56,8 @@ Digitial Ocean example
 
      config setprop pki LetsEncrypt_dns_digitalocean_token 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
-3. Request test certificate for domain ``myserver.nethserver.org``:
+3. Request certificate for domain ``myserver.nethserver.org``:
 
    ::
  
-     /usr/libexec/nethserver/letsencrypt-certs -t -v -d myserver.nethserver.org
+     /usr/libexec/nethserver/letsencrypt-certs -v -d myserver.nethserver.org
