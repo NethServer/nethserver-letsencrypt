@@ -50,7 +50,7 @@ Digitial Ocean example
 
      config setprop pki LetsEncryptChallenge dns-digitalocean
 
-2. Configure requires props accordingly to https://certbot-dns-digitalocean.readthedocs.io/en/stable/:
+2. Configure required props accordingly to https://certbot-dns-digitalocean.readthedocs.io/en/stable/:
    
    ::
 
