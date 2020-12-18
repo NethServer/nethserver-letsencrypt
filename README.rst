@@ -19,7 +19,7 @@ Database properties under ``pki`` key inside ``configuration`` database:
 - ``LetsEncryptDomains``: comma-separated list of domains added to certificate SAN field
 - ``LetsEncryptChallenge``: challenge to use for validating the certificate, default is ``http``.
   It accepts also values like ``dns-<provider>``. Where ``<provider>`` is the name of the DNS provider.
-  See full list of available DNS plugins by executing ``certbot -h certonly``.
+  See the full list of available DNS provider plugins by executing ``certbot -h certonly``.
   More info at https://certbot.eff.org/docs/using.html?highlight=dns#dns-plugins.
 
 DNS challenge
