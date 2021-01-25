@@ -3,7 +3,6 @@
 use esmith::ConfigDB;
 use esmith::HostsDB;
 use File::stat;
-use esmith::event;
 use Getopt::Std;
 use File::Temp;
 
@@ -56,13 +55,6 @@ sub renew {
         $opts .= " --preferred-challenges dns --$challenge --$challenge-credentials $config --$challenge-propagation-seconds 15";
     }
 
-    # file paths
-    my $crt = $crtdir."/live/".lc(${$domains}[0])."/cert.pem";
-    
-    # read the date of certificate link before renewal
-    my $tmp = stat($crt);
-    my $before = defined($tmp) ? $tmp->mtime : 0;
-    
     my $cmd = "$lebin $opts";
 
     foreach (@$domains) {
@@ -90,13 +82,6 @@ sub renew {
         exit $ret>>8;
     }
 
-    # read the date of certificate link after renewal
-    $tmp = stat($crt);
-    my $after = defined($tmp) ? $tmp->mtime : 0;
-
-    if ($before != $after) {
-        $modified++;
-    }
 }
 
 sub help {
@@ -177,14 +162,5 @@ if ($challenge =~ m/^dns/) {
 
 # Renew certificate for all domains
 renew(\@domains, $challenge, $tmp ? $tmp->filename : undef);
-
-if ($modified > 0) {
-   if ($verbose) {
-      print "Executing certificate-update event...\n";
-   }
-   if(esmith::event::event_signal('certificate-update') == 0) {
-       exit 1;
-   }
-}
 
 exit 0;
