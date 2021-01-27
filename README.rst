@@ -14,7 +14,6 @@ For more info, see: ::
 
 Database properties under ``pki`` key inside ``configuration`` database:
 
-- ``LetsEncryptRenewDays``: days to the expiration, the certificate will be renewd when the condition is met
 - ``LetsEncryptMail``: (optional) registration mail for LE notifications
 - ``LetsEncryptDomains``: comma-separated list of domains added to certificate SAN field
 - ``LetsEncryptChallenge``: challenge to use for validating the certificate, default is ``http``.

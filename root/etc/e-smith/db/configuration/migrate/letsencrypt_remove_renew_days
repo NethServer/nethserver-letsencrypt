@@ -1,0 +1,10 @@
+{
+    #
+    # remove unused prop LetsEncryptRenewDays
+    #
+
+    use esmith::ConfigDB;
+    my $configDb = esmith::ConfigDB->open() || return '';
+    $configDb->get_prop_and_delete('pki','LetsEncryptRenewDays');
+    '';
+}
